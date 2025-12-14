@@ -1,16 +1,6 @@
 import React from "react";
 
-export interface YunoIframeProps {
-  url: string;
-  width?: string;
-  height?: string;
-}
-
-export function YunoIframe({
-  url,
-  width = "100%",
-  height = "600px",
-}: YunoIframeProps) {
+export function YunoIframe({ url, width = "100%", height = "600px" }) {
   return (
     <iframe
       src={url}
