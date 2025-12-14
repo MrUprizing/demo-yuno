@@ -9,7 +9,8 @@
     "demo-yuno-website-docs": {
       "routing": [
         {
-          "paths": ["/docs"]
+          "group": "docs",
+          "paths": ["/docs/:path*"]
         }
       ]
     }
