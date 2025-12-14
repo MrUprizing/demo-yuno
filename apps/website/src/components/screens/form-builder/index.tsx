@@ -140,7 +140,7 @@ export default function FormBuilder() {
       console.log("Saving form configuration:", jsonString);
 
       const response = await fetch(
-        "http://52.15.192.69:8080/api/payments/style",
+        "https://drinksdepot.online:443/api/payments/style",
         {
           method: "POST",
           headers: {
