@@ -76,7 +76,7 @@ export function NavigationMenuDemo() {
               asChild
               className={navigationMenuTriggerStyle()}
             >
-              <Link href="https://docs-yuno.vercel.app/docs">Docs</Link>
+              <Link href="https://docs.yuno.uprizing.me/docs">Docs</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
