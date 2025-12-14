@@ -1,0 +1,77 @@
+---
+title: Installation
+description: Installation and setup guide for Yuno Demo
+---
+
+# Installation
+
+This guide will help you install and configure Yuno Demo in your local environment.
+
+## Prerequisites
+
+Before starting, make sure you have installed:
+
+- **Node.js** 18.x or higher (recommended: 22.x)
+- **npm**, **pnpm**, or **bun** as package manager
+- **Git** to clone the repository
+
+> **Warning**: Node.js 22.x is recommended for optimal performance with React Compiler.
+
+## Installation Steps
+
+### Clone the repository
+
+```bash
+git clone https://github.com/MrUprizing/demo-yuno.git
+cd demo-yuno
+```
+
+### Install dependencies
+
+Choose your preferred package manager:
+
+```bash
+# npm
+npm install
+
+# pnpm  
+pnpm install
+
+# bun
+bun install
+```
+
+### Configure environment variables
+
+Crea un archivo `.env.local` en el directorio `apps/website`:
+
+```bash
+# apps/website/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
+
+### Start the development server
+
+```bash
+npm run dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+> **Note**: For production deployment, check the [Configuration](/docs/api/configuration) guide.
+
+## Project Structure
+
+```
+demo-yuno/
+├── apps/
+│   ├── backend/          # Java Spring Boot Backend
+│   └── website/          # Next.js Frontend
+├── packages/
+│   └── yuno-demo-sdk/    # Shared SDK
+└── ...
+```
+
+## Next Step
+
+Continue with the [Quick Start Guide](/docs/quick-start) to learn how to use the application.

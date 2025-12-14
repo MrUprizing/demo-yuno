@@ -1,0 +1,443 @@
+---
+title: Theming
+description: Theme system and style customization
+---
+
+# Theming and Customization
+
+Yuno Demo includes a complete theme system with support for dark mode and multiple color schemes.
+
+## Theme System
+
+The theme system is based on **CSS Variables** and **Tailwind CSS**, allowing complete and dynamic customization.
+
+## Available Themes
+
+The following themes are included by default:
+
+- 🌞 **Light** - Default light theme
+- 🌙 **Dark** - Dark theme
+- 🔵 **Blue** - Professional blue
+- 🟢 **Green** - Fresh green
+- 🟣 **Purple** - Modern purple
+- 🔴 **Red** - Vibrant red
+- 🟡 **Yellow** - Warm yellow
+- 🟠 **Orange** - Energetic orange
+
+## Using the Theme Selector
+
+```tsx
+import { ThemePicker } from "@/components/theme-picker";
+
+export default function Layout() {
+  return (
+    <div>
+      <header>
+        <ThemePicker />
+      </header>
+      {/* resto del layout */}
+    </div>
+  );
+}
+```
+
+## Variables CSS
+
+Las variables de tema se definen en `src/app/globals.css`:
+
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+```
+
+## Crear un tema personalizado
+
+### 1. Definir variables CSS
+
+```css
+/* src/app/globals.css */
+
+.theme-custom {
+  --background: 240 100% 98%;
+  --foreground: 240 100% 10%;
+  --primary: 240 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 50% 90%;
+  --secondary-foreground: 240 100% 20%;
+  --muted: 240 30% 95%;
+  --muted-foreground: 240 20% 40%;
+  --accent: 280 80% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 30% 90%;
+  --input: 240 30% 90%;
+  --ring: 240 100% 50%;
+  --radius: 0.75rem;
+}
+```
+
+### 2. Agregar al selector de temas
+
+```tsx
+// components/theme-picker.tsx
+
+const themes = [
+  // ... temas existentes
+  {
+    name: "custom",
+    label: "Mi Tema",
+    activeColor: "hsl(240, 100%, 50%)",
+  },
+];
+```
+
+## Cambiar tema programáticamente
+
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+
+export function useTheme() {
+  const [theme, setTheme] = useState<string>("light");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem("theme") || "light";
+    
+    root.classList.remove(...root.classList);
+    root.classList.add(savedTheme === "dark" ? "dark" : "light");
+    root.setAttribute("data-theme", savedTheme);
+    
+    setTheme(savedTheme);
+  }, []);
+
+  const changeTheme = (newTheme: string) => {
+    const root = document.documentElement;
+    
+    root.classList.remove(...root.classList);
+    if (newTheme === "dark") {
+      root.classList.add("dark");
+    }
+    root.setAttribute("data-theme", newTheme);
+    
+    localStorage.setItem("theme", newTheme);
+    setTheme(newTheme);
+  };
+
+  return { theme, changeTheme };
+}
+
+// Uso
+function MyComponent() {
+  const { theme, changeTheme } = useTheme();
+  
+  return (
+    <button onClick={() => changeTheme(theme === "dark" ? "light" : "dark")}>
+      Cambiar tema
+    </button>
+  );
+}
+```
+
+## Tema por defecto del sistema
+
+Detectar preferencia del sistema operativo:
+
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+
+export function useSystemTheme() {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setTheme(e.matches ? "dark" : "light");
+    };
+    
+    setTheme(mediaQuery.matches ? "dark" : "light");
+    mediaQuery.addEventListener("change", handleChange);
+    
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  return theme;
+}
+```
+
+## Personalizar componentes
+
+### Con clases de Tailwind
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button className="bg-purple-500 hover:bg-purple-600 text-white">
+  Botón personalizado
+</Button>
+```
+
+### Con variantes personalizadas
+
+```tsx
+// components/ui/button.tsx
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground",
+        outline: "border border-input hover:bg-accent",
+        secondary: "bg-secondary text-secondary-foreground",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "underline-offset-4 hover:underline",
+        // Agregar variante personalizada
+        gradient: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+  }
+);
+
+// Uso
+<Button variant="gradient">Click me</Button>
+```
+
+## Animaciones personalizadas
+
+```css
+/* src/app/globals.css */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+```
+
+```tsx
+<div className="animate-slide-in">
+  Contenido animado
+</div>
+```
+
+## Tipografía personalizada
+
+```css
+/* src/app/globals.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+```
+
+O con Next.js Font Optimization:
+
+```tsx
+// app/layout.tsx
+import { Inter, Roboto_Mono } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
+
+export default function RootLayout({ children }) {
+  return (
+    <html className={`${inter.variable} ${robotoMono.variable}`}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+## Espaciado y bordes
+
+Personalizar el radio de borde globalmente:
+
+```css
+:root {
+  --radius: 0.5rem; /* Por defecto */
+}
+
+/* Bordes más redondeados */
+.theme-rounded {
+  --radius: 1rem;
+}
+
+/* Bordes cuadrados */
+.theme-square {
+  --radius: 0;
+}
+```
+
+## Colores personalizados en Tailwind
+
+```typescript
+// tailwind.config.ts
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  theme: {
+    extend: {
+      colors: {
+        // Agregar colores personalizados
+        brand: {
+          50: "#f0f9ff",
+          100: "#e0f2fe",
+          200: "#bae6fd",
+          300: "#7dd3fc",
+          400: "#38bdf8",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+          800: "#075985",
+          900: "#0c4a6e",
+        },
+      },
+    },
+  },
+};
+```
+
+## Temas para componentes específicos
+
+```tsx
+import { Card } from "@/components/ui/card";
+
+// Tema claro forzado
+<Card className="bg-white text-black dark:bg-white dark:text-black">
+  Siempre claro
+</Card>
+
+// Tema oscuro forzado
+<Card className="bg-slate-900 text-white">
+  Siempre oscuro
+</Card>
+```
+
+## Persistir preferencias
+
+```tsx
+// hooks/use-theme-preferences.ts
+import { useState, useEffect } from "react";
+
+interface ThemePreferences {
+  theme: string;
+  fontSize: "sm" | "base" | "lg";
+  reducedMotion: boolean;
+}
+
+export function useThemePreferences() {
+  const [preferences, setPreferences] = useState<ThemePreferences>({
+    theme: "light",
+    fontSize: "base",
+    reducedMotion: false,
+  });
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme-preferences");
+    if (saved) {
+      setPreferences(JSON.parse(saved));
+    }
+  }, []);
+
+  const updatePreferences = (newPreferences: Partial<ThemePreferences>) => {
+    const updated = { ...preferences, ...newPreferences };
+    setPreferences(updated);
+    localStorage.setItem("theme-preferences", JSON.stringify(updated));
+    
+    // Aplicar cambios
+    document.documentElement.setAttribute("data-font-size", updated.fontSize);
+    if (updated.reducedMotion) {
+      document.documentElement.classList.add("reduce-motion");
+    }
+  };
+
+  return { preferences, updatePreferences };
+}
+```
+
+## Recursos adicionales
+
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Radix UI Theming](https://www.radix-ui.com/themes/docs/theme/overview)
+- [CSS Variables Reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
+
+## Siguiente paso
+
+Explora más ejemplos en el [Playground](/playground) de la aplicación.

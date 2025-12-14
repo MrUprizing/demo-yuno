@@ -1,0 +1,217 @@
+---
+title: Form Builder
+description: Visual form builder with drag & drop
+---
+
+# Form Builder
+
+The Form Builder is a visual form constructor that allows you to create complex forms through an intuitive drag & drop interface.
+
+> **Note**: The Form Builder supports real-time validation and exports to multiple formats.
+
+## Features
+
+- 🎨 **Visual Editor**: Drag and drop fields to build forms
+- 👁️ **Real-time Preview**: See how your form will look as you build it
+- 💾 **Export**: Export your form as JSON Schema or React code
+- ✅ **Validation**: Configure validation rules for each field
+- 🎭 **Styles**: Customize the appearance of your forms
+
+> **Warning**: Make sure each field has a unique ID to avoid conflicts.
+
+## Basic Usage
+
+```tsx
+import { FormBuilder } from "@/components/screens/form-builder";
+
+export default function BuilderPage() {
+  return (
+    <div className="container mx-auto">
+      <FormBuilder />
+    </div>
+  );
+}
+```
+
+## Componentes principales
+
+### FormBuilder
+
+El componente principal que contiene todo el editor.
+
+```tsx
+<FormBuilder 
+  initialFields={[]}
+  onSave={(fields) => console.log(fields)}
+/>
+```
+
+### FieldSelector
+
+Panel lateral con todos los tipos de campos disponibles.
+
+```tsx
+import { FieldSelector } from "@/components/screens/field-selector";
+
+<FieldSelector onFieldSelect={(field) => addField(field)} />
+```
+
+### FormPreview
+
+Renderiza una vista previa interactiva del formulario.
+
+```tsx
+import { FormPreview } from "@/components/screens/form-preview";
+
+<FormPreview fields={fields} />
+```
+
+## Estructura de un campo
+
+Cada campo en el formulario tiene la siguiente estructura:
+
+```typescript
+interface FormField {
+  id: string;
+  type: string;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  validation?: {
+    min?: number;
+    max?: number;
+    pattern?: string;
+    message?: string;
+  };
+  options?: Array<{
+    label: string;
+    value: string;
+  }>;
+  defaultValue?: any;
+  description?: string;
+}
+```
+
+## Ejemplo completo
+
+```tsx
+import { useState } from "react";
+import { FormBuilder } from "@/components/screens/form-builder";
+import { Button } from "@/components/ui/button";
+
+export default function CustomFormBuilder() {
+  const [fields, setFields] = useState([
+    {
+      id: "email",
+      type: "email",
+      label: "Email",
+      placeholder: "tu@email.com",
+      required: true,
+      validation: {
+        pattern: "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+        message: "Email inválido",
+      },
+    },
+    {
+      id: "country",
+      type: "select",
+      label: "País",
+      required: true,
+      options: [
+        { label: "México", value: "mx" },
+        { label: "Colombia", value: "co" },
+        { label: "Argentina", value: "ar" },
+      ],
+    },
+  ]);
+
+  const handleSave = (formData) => {
+    console.log("Formulario guardado:", formData);
+    // Guardar en tu backend o localStorage
+  };
+
+  return (
+    <div>
+      <FormBuilder 
+        initialFields={fields}
+        onSave={handleSave}
+      />
+    </div>
+  );
+}
+```
+
+## Exportar formulario
+
+### Como JSON Schema
+
+```tsx
+import { generateJsonSchema } from "@/lib/json-schema-generator";
+
+const jsonSchema = generateJsonSchema(fields);
+console.log(jsonSchema);
+```
+
+### Como código React
+
+```tsx
+import { GenerateCodeField } from "@/components/screens/generate-code-field";
+
+<GenerateCodeField fields={fields} />
+```
+
+## Personalización
+
+### Agregar campos personalizados
+
+Puedes extender el Form Builder con tus propios tipos de campo:
+
+```tsx
+import { FIELD_TYPES } from "@/constants/components";
+
+const customFieldTypes = [
+  ...FIELD_TYPES,
+  {
+    type: "custom-rating",
+    label: "Rating personalizado",
+    icon: "Star",
+    component: MyCustomRating,
+  },
+];
+```
+
+### Estilos personalizados
+
+```tsx
+<FormBuilder 
+  className="bg-slate-50 dark:bg-slate-900"
+  previewClassName="border-2 border-primary"
+/>
+```
+
+## Eventos
+
+El Form Builder emite varios eventos que puedes escuchar:
+
+```tsx
+<FormBuilder
+  onFieldAdd={(field) => console.log("Campo agregado:", field)}
+  onFieldRemove={(fieldId) => console.log("Campo eliminado:", fieldId)}
+  onFieldUpdate={(field) => console.log("Campo actualizado:", field)}
+  onFieldReorder={(fields) => console.log("Campos reordenados:", fields)}
+  onSave={(data) => console.log("Formulario guardado:", data)}
+  onExport={(format) => console.log("Exportado como:", format)}
+/>
+```
+
+## Tips y mejores prácticas
+
+1. **IDs únicos**: Asegúrate de que cada campo tenga un ID único
+2. **Validación**: Configura validaciones apropiadas para mejorar la experiencia del usuario
+3. **Labels claros**: Usa etiquetas descriptivas para cada campo
+4. **Campos requeridos**: Marca claramente qué campos son obligatorios
+5. **Testing**: Prueba tu formulario en la vista previa antes de implementarlo
+
+## Siguiente paso
+
+Aprende sobre todos los [Tipos de Campos](/docs/components/field-types) disponibles.

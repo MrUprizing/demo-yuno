@@ -1,0 +1,408 @@
+---
+title: Field Types
+description: Available field types for forms
+---
+
+# Field Types
+
+The Form Builder includes a wide variety of field types to cover all data input needs.
+
+## Text Fields
+
+### Input
+
+Basic text field for short text input.
+
+```tsx
+import { Input } from "@/components/ui/input";
+
+<Input 
+  type="text"
+  placeholder="Ingresa tu nombre"
+  required
+/>
+```
+
+**Propiedades:**
+- `type`: text, email, url, tel, search
+- `placeholder`: Texto de ayuda
+- `maxLength`: Longitud máxima
+- `minLength`: Longitud mínima
+- `pattern`: Expresión regular para validación
+
+### Textarea
+
+Campo de texto multilínea para textos largos.
+
+```tsx
+import { Textarea } from "@/components/ui/textarea";
+
+<Textarea 
+  placeholder="Describe tu consulta..."
+  rows={4}
+  maxLength={500}
+/>
+```
+
+### Password Input
+
+Campo especializado para contraseñas con opción de mostrar/ocultar.
+
+```tsx
+import { PasswordInput } from "@/components/ui/password-input";
+
+<PasswordInput 
+  placeholder="Ingresa tu contraseña"
+  showStrengthIndicator
+/>
+```
+
+## Campos de selección
+
+### Select
+
+Menú desplegable para seleccionar una opción.
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Selecciona un país" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="mx">México</SelectItem>
+    <SelectItem value="co">Colombia</SelectItem>
+    <SelectItem value="ar">Argentina</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+### Multi-Select
+
+Permite seleccionar múltiples opciones.
+
+```tsx
+import { MultiSelect } from "@/components/ui/multi-select";
+
+<MultiSelect
+  options={[
+    { label: "React", value: "react" },
+    { label: "Vue", value: "vue" },
+    { label: "Angular", value: "angular" },
+  ]}
+  placeholder="Selecciona frameworks"
+  onValueChange={(values) => console.log(values)}
+/>
+```
+
+### Radio Group
+
+Grupo de opciones donde solo se puede seleccionar una.
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+
+<RadioGroup defaultValue="option1">
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="option1" id="option1" />
+    <Label htmlFor="option1">Opción 1</Label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem value="option2" id="option2" />
+    <Label htmlFor="option2">Opción 2</Label>
+  </div>
+</RadioGroup>
+```
+
+### Checkbox
+
+Casilla de verificación para opciones múltiples.
+
+```tsx
+import { Checkbox } from "@/components/ui/checkbox";
+
+<Checkbox id="terms" />
+<label htmlFor="terms">Acepto los términos y condiciones</label>
+```
+
+## Campos de fecha y hora
+
+### Calendar
+
+Selector de fecha con calendario visual.
+
+```tsx
+import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
+
+const [date, setDate] = useState<Date | undefined>(new Date());
+
+<Calendar
+  mode="single"
+  selected={date}
+  onSelect={setDate}
+  className="rounded-md border"
+/>
+```
+
+### DateTime Picker
+
+Selector combinado de fecha y hora.
+
+```tsx
+import { DateTimePicker } from "@/components/ui/datetime-picker";
+
+<DateTimePicker
+  value={dateTime}
+  onChange={setDateTime}
+  granularity="minute"
+/>
+```
+
+### Smart DateTime Input
+
+Input inteligente que interpreta texto natural.
+
+```tsx
+import { SmartDatetimeInput } from "@/components/ui/smart-datetime-input";
+
+<SmartDatetimeInput
+  placeholder="Escribe 'mañana a las 3pm'"
+  onValueChange={(date) => console.log(date)}
+/>
+```
+
+## Campos especializados
+
+### Phone Input
+
+Campo especializado para números telefónicos con selector de país.
+
+```tsx
+import { PhoneInput } from "@/components/ui/phone-input";
+
+<PhoneInput
+  defaultCountry="MX"
+  placeholder="Ingresa tu número"
+  value={phone}
+  onChange={setPhone}
+/>
+```
+
+### Location Input
+
+Campo de búsqueda de ubicaciones geográficas.
+
+```tsx
+import { LocationInput } from "@/components/ui/location-input";
+
+<LocationInput
+  onLocationSelect={(location) => {
+    console.log(location.address, location.coordinates);
+  }}
+/>
+```
+
+### Credit Card
+
+Campo especializado para tarjetas de crédito con validación.
+
+```tsx
+import { CreditCard } from "@/components/ui/credit-card";
+
+<CreditCard
+  onCardChange={(cardData) => {
+    console.log(cardData.number, cardData.expiry, cardData.cvc);
+  }}
+/>
+```
+
+### Signature Input
+
+Campo para capturar firmas digitales.
+
+```tsx
+import { SignatureInput } from "@/components/ui/signature-input";
+
+<SignatureInput
+  onSignatureChange={(signature) => {
+    console.log("Firma guardada:", signature);
+  }}
+  penColor="black"
+  width={400}
+  height={200}
+/>
+```
+
+### Color Picker
+
+Selector de colores con múltiples formatos.
+
+```tsx
+import { ColorPicker } from "@/components/ui/color-picker";
+
+<ColorPicker
+  value={color}
+  onChange={setColor}
+  format="hex" // hex, rgb, hsl
+/>
+```
+
+## Campos de entrada avanzados
+
+### File Upload
+
+Campo para subir archivos con preview.
+
+```tsx
+import { FileUpload } from "@/components/ui/file-upload";
+
+<FileUpload
+  accept="image/*,.pdf"
+  maxSize={5 * 1024 * 1024} // 5MB
+  onFileChange={(files) => console.log(files)}
+  multiple
+/>
+```
+
+### Tags Input
+
+Campo para ingresar múltiples etiquetas.
+
+```tsx
+import { TagsInput } from "@/components/ui/tags-input";
+
+<TagsInput
+  value={tags}
+  onValueChange={setTags}
+  placeholder="Agrega etiquetas..."
+/>
+```
+
+### Rating
+
+Campo de calificación con estrellas o iconos personalizados.
+
+```tsx
+import { Rating } from "@/components/ui/rating";
+
+<Rating
+  value={rating}
+  onValueChange={setRating}
+  max={5}
+  size="lg"
+/>
+```
+
+### Slider
+
+Control deslizante para valores numéricos.
+
+```tsx
+import { Slider } from "@/components/ui/slider";
+
+<Slider
+  defaultValue={[50]}
+  max={100}
+  step={1}
+  onValueChange={(value) => console.log(value)}
+/>
+```
+
+### Input OTP
+
+Campo especializado para códigos de verificación.
+
+```tsx
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+
+<InputOTP maxLength={6} value={otp} onChange={setOtp}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+## Campos de agrupación
+
+### Input Group
+
+Agrupa múltiples inputs con prefijos/sufijos.
+
+```tsx
+import { InputGroup } from "@/components/ui/input-group";
+import { DollarSign } from "lucide-react";
+
+<InputGroup>
+  <InputGroup.Addon>
+    <DollarSign className="h-4 w-4" />
+  </InputGroup.Addon>
+  <Input type="number" placeholder="0.00" />
+  <InputGroup.Addon>USD</InputGroup.Addon>
+</InputGroup>
+```
+
+## Switch y Toggle
+
+### Switch
+
+Interruptor para opciones binarias.
+
+```tsx
+import { Switch } from "@/components/ui/switch";
+
+<Switch
+  checked={enabled}
+  onCheckedChange={setEnabled}
+/>
+```
+
+### Toggle
+
+Botón toggle para estados on/off.
+
+```tsx
+import { Toggle } from "@/components/ui/toggle";
+import { Bold } from "lucide-react";
+
+<Toggle aria-label="Toggle bold">
+  <Bold className="h-4 w-4" />
+</Toggle>
+```
+
+## Validación de campos
+
+Todos los campos soportan validación mediante React Hook Form y Zod:
+
+```tsx
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const formSchema = z.object({
+  email: z.string().email("Email inválido"),
+  age: z.number().min(18, "Debes ser mayor de 18"),
+  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Teléfono inválido"),
+});
+
+const form = useForm({
+  resolver: zodResolver(formSchema),
+});
+```
+
+## Siguiente paso
+
+Aprende sobre [Validación](/docs/api/validation) de formularios.

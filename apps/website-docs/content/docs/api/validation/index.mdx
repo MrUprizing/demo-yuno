@@ -1,0 +1,460 @@
+---
+title: Validation
+description: Validation system with Zod and React Hook Form
+---
+
+# Validation
+
+Yuno Demo uses **Zod** for schema validation and **React Hook Form** for form management, providing robust validation and type safety.
+
+## Installation
+
+Validation dependencies are already included in the project:
+
+```bash
+npm install zod react-hook-form @hookform/resolvers
+```
+
+## Esquemas de validación básicos
+
+### Email
+
+```typescript
+import { z } from "zod";
+
+export const emailSchema = z
+  .string()
+  .email({ message: "Dirección de email inválida" })
+  .min(1, { message: "El email es requerido" });
+```
+
+### Contraseña
+
+```typescript
+export const passwordSchema = z
+  .string()
+  .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+  .regex(/[a-z]/, { message: "Debe contener al menos una minúscula" })
+  .regex(/[A-Z]/, { message: "Debe contener al menos una mayúscula" })
+  .regex(/[0-9]/, { message: "Debe contener al menos un número" })
+  .regex(/[^a-zA-Z0-9]/, { message: "Debe contener al menos un carácter especial" });
+```
+
+### Nombre
+
+```typescript
+export const nameSchema = z
+  .string()
+  .min(2, { message: "El nombre debe tener al menos 2 caracteres" })
+  .max(50, { message: "El nombre no puede exceder 50 caracteres" })
+  .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, { 
+    message: "El nombre solo puede contener letras" 
+  });
+```
+
+### Teléfono
+
+```typescript
+export const phoneSchema = z
+  .string()
+  .regex(/^\+?[1-9]\d{1,14}$/, { 
+    message: "Número de teléfono inválido" 
+  });
+```
+
+### URL
+
+```typescript
+export const urlSchema = z
+  .string()
+  .url({ message: "URL inválida" })
+  .startsWith("https://", { message: "La URL debe usar HTTPS" });
+```
+
+## Esquemas compuestos
+
+### Formulario de registro
+
+```typescript
+import { z } from "zod";
+
+export const registerFormSchema = z
+  .object({
+    name: nameSchema,
+    email: emailSchema,
+    phone: phoneSchema,
+    password: passwordSchema,
+    confirmPassword: z.string(),
+    termsAccepted: z.boolean().refine((val) => val === true, {
+      message: "Debes aceptar los términos y condiciones",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Las contraseñas no coinciden",
+  });
+
+type RegisterFormData = z.infer<typeof registerFormSchema>;
+```
+
+### Formulario de contacto
+
+```typescript
+export const contactFormSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  subject: z.string().min(5, { message: "El asunto es muy corto" }),
+  message: z
+    .string()
+    .min(10, { message: "El mensaje debe tener al menos 10 caracteres" })
+    .max(500, { message: "El mensaje no puede exceder 500 caracteres" }),
+  attachments: z
+    .array(z.instanceof(File))
+    .max(3, { message: "Máximo 3 archivos" })
+    .optional(),
+});
+```
+
+## Uso con React Hook Form
+
+### Ejemplo básico
+
+```tsx
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+const formSchema = z.object({
+  username: z.string().min(3).max(20),
+  email: z.string().email(),
+  age: z.number().min(18).max(120),
+});
+
+export function MyForm() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      age: 18,
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Usuario</FormLabel>
+              <FormControl>
+                <Input placeholder="johndoe" {...field} />
+              </FormControl>
+              <FormDescription>
+                Tu nombre de usuario público
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="email@ejemplo.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit">Enviar</Button>
+      </form>
+    </Form>
+  );
+}
+```
+
+## Validación condicional
+
+### Campos dependientes
+
+```typescript
+const paymentSchema = z
+  .object({
+    paymentMethod: z.enum(["card", "paypal", "crypto"]),
+    cardNumber: z.string().optional(),
+    paypalEmail: z.string().optional(),
+    walletAddress: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.paymentMethod === "card" && !data.cardNumber) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Número de tarjeta requerido",
+        path: ["cardNumber"],
+      });
+    }
+    
+    if (data.paymentMethod === "paypal" && !data.paypalEmail) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Email de PayPal requerido",
+        path: ["paypalEmail"],
+      });
+    }
+    
+    if (data.paymentMethod === "crypto" && !data.walletAddress) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Dirección de wallet requerida",
+        path: ["walletAddress"],
+      });
+    }
+  });
+```
+
+## Validación de archivos
+
+```typescript
+const fileSchema = z
+  .instanceof(File)
+  .refine((file) => file.size <= 5 * 1024 * 1024, {
+    message: "El archivo no puede superar 5MB",
+  })
+  .refine(
+    (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+    {
+      message: "Solo se permiten imágenes JPG, PNG o WebP",
+    }
+  );
+
+const uploadSchema = z.object({
+  avatar: fileSchema,
+  documents: z.array(fileSchema).max(3, {
+    message: "Máximo 3 documentos",
+  }),
+});
+```
+
+## Validación asíncrona
+
+```typescript
+const usernameSchema = z.string().refine(
+  async (username) => {
+    // Verificar si el username está disponible
+    const response = await fetch(`/api/check-username?username=${username}`);
+    const { available } = await response.json();
+    return available;
+  },
+  {
+    message: "Este nombre de usuario ya está en uso",
+  }
+);
+```
+
+## Validación de arrays
+
+```typescript
+const tagsSchema = z
+  .array(z.string().min(2).max(20))
+  .min(1, { message: "Debes agregar al menos una etiqueta" })
+  .max(5, { message: "Máximo 5 etiquetas" });
+
+const itemsSchema = z
+  .array(
+    z.object({
+      name: z.string(),
+      quantity: z.number().positive(),
+      price: z.number().positive(),
+    })
+  )
+  .nonempty({ message: "Debes agregar al menos un item" });
+```
+
+## Validación de objetos anidados
+
+```typescript
+const addressSchema = z.object({
+  street: z.string().min(5),
+  city: z.string().min(2),
+  state: z.string().length(2),
+  zipCode: z.string().regex(/^\d{5}$/),
+  country: z.string().length(2),
+});
+
+const userSchema = z.object({
+  personalInfo: z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    birthDate: z.date(),
+  }),
+  shippingAddress: addressSchema,
+  billingAddress: addressSchema.optional(),
+  sameAsShipping: z.boolean(),
+});
+```
+
+## Transformaciones
+
+```typescript
+const trimmedString = z.string().trim();
+
+const normalizedEmail = z
+  .string()
+  .email()
+  .transform((val) => val.toLowerCase());
+
+const stringToNumber = z
+  .string()
+  .transform((val) => Number.parseInt(val, 10))
+  .pipe(z.number().positive());
+
+const dateString = z
+  .string()
+  .transform((str) => new Date(str))
+  .pipe(z.date());
+```
+
+## Mensajes de error personalizados
+
+```typescript
+const customErrorSchema = z.object({
+  email: z.string().email({
+    message: "Por favor ingresa un email válido como ejemplo@dominio.com",
+  }),
+  password: z
+    .string()
+    .min(8, {
+      message: "La contraseña es demasiado corta. Usa al menos 8 caracteres.",
+    })
+    .max(100, {
+      message: "La contraseña es demasiado larga. Usa máximo 100 caracteres.",
+    }),
+});
+```
+
+## Validación en el servidor
+
+```typescript
+// app/api/register/route.ts
+import { NextResponse } from "next/server";
+import { registerFormSchema } from "@/lib/validation-schemas";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    
+    // Validar datos
+    const validatedData = registerFormSchema.parse(body);
+    
+    // Procesar datos validados
+    // ...
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { errors: error.errors },
+        { status: 400 }
+      );
+    }
+    
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Utilidades de validación
+
+```typescript
+// lib/validation-utils.ts
+
+// Validar email con dominio específico
+export const createEmailWithDomainSchema = (domain: string) => {
+  return z.string().email().refine(
+    (email) => email.endsWith(`@${domain}`),
+    { message: `El email debe ser del dominio @${domain}` }
+  );
+};
+
+// Validar rango de fechas
+export const dateRangeSchema = z
+  .object({
+    startDate: z.date(),
+    endDate: z.date(),
+  })
+  .refine((data) => data.endDate > data.startDate, {
+    message: "La fecha final debe ser posterior a la fecha inicial",
+    path: ["endDate"],
+  });
+
+// Validar al menos un campo requerido
+export const atLeastOneRequired = <T extends z.ZodRawShape>(schema: T) => {
+  return z.object(schema).refine(
+    (data) => Object.values(data).some((value) => value !== undefined),
+    { message: "Al menos un campo es requerido" }
+  );
+};
+```
+
+## Testing de validación
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { registerFormSchema } from "@/lib/validation-schemas";
+
+describe("registerFormSchema", () => {
+  it("should validate correct data", () => {
+    const validData = {
+      name: "John Doe",
+      email: "john@example.com",
+      phone: "+1234567890",
+      password: "SecureP@ss123",
+      confirmPassword: "SecureP@ss123",
+      termsAccepted: true,
+    };
+    
+    expect(() => registerFormSchema.parse(validData)).not.toThrow();
+  });
+  
+  it("should reject invalid email", () => {
+    const invalidData = {
+      email: "invalid-email",
+      // ... otros campos
+    };
+    
+    expect(() => registerFormSchema.parse(invalidData)).toThrow();
+  });
+});
+```
+
+## Siguiente paso
+
+Aprende sobre [Temas y Personalización](/docs/theming) para estilizar tu aplicación.

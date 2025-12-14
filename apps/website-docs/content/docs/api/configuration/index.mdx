@@ -1,0 +1,368 @@
+---
+title: Configuration
+description: Configuration and customization of Yuno Demo
+---
+
+# Configuration
+
+Learn how to configure and customize Yuno Demo according to your needs.
+
+## Environment Variables
+
+### Frontend (Next.js)
+
+Create a `.env.local` file in `apps/website/`:
+
+```bash
+# API Backend
+NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_API_TIMEOUT=30000
+
+# Características opcionales
+NEXT_PUBLIC_ENABLE_ANALYTICS=false
+NEXT_PUBLIC_ENABLE_DEBUG=true
+
+# Temas
+NEXT_PUBLIC_DEFAULT_THEME=light
+```
+
+### Backend (Spring Boot)
+
+Configura `apps/backend/demoYuno/src/main/resources/application.properties`:
+
+```properties
+# Server Configuration
+server.port=8080
+server.servlet.context-path=/api
+
+# CORS Configuration
+cors.allowed-origins=http://localhost:3000
+cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+cors.allowed-headers=*
+
+# Yuno API
+yuno.api.key=${YUNO_API_KEY}
+yuno.api.url=https://api.yuno.com
+yuno.api.timeout=30000
+
+# Logging
+logging.level.root=INFO
+logging.level.com.example.demo=DEBUG
+```
+
+## Configuración de Next.js
+
+### next.config.ts
+
+```typescript
+import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
+
+const nextConfig: NextConfig = {
+  // Habilitar React Compiler
+  reactCompiler: true,
+  
+  // Extensiones de página para MDX
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  
+  // Imágenes
+  images: {
+    domains: ["localhost", "api.yuno.com"],
+    formats: ["image/avif", "image/webp"],
+  },
+  
+  // Rutas
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
+      },
+    ];
+  },
+  
+  // Headers de seguridad
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
+export default withMDX(nextConfig);
+```
+
+## Configuración de TypeScript
+
+### tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+## Configuración de Biome
+
+### biome.json
+
+```json
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "ignore": [
+      "node_modules",
+      ".next",
+      "dist",
+      "build",
+      "coverage"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "always",
+      "trailingCommas": "es5"
+    }
+  }
+}
+```
+
+## Configuración de Tailwind
+
+### tailwind.config.ts
+
+```typescript
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+};
+
+export default config;
+```
+
+## Configuración de OpenAPI
+
+### orval.config.ts
+
+```typescript
+import { defineConfig } from "orval";
+
+export default defineConfig({
+  yunoApi: {
+    input: {
+      target: "./apps/backend/demoYuno/openapi.json",
+    },
+    output: {
+      mode: "tags-split",
+      target: "./packages/yuno-demo-sdk/src/api",
+      schemas: "./packages/yuno-demo-sdk/src/models",
+      client: "react-query",
+      mock: true,
+      override: {
+        mutator: {
+          path: "./packages/yuno-demo-sdk/src/mutator.ts",
+          name: "customInstance",
+        },
+      },
+    },
+  },
+});
+```
+
+## Opciones de configuración
+
+### Habilitar/Deshabilitar características
+
+```typescript
+// src/config/features.ts
+export const features = {
+  formBuilder: true,
+  analytics: false,
+  darkMode: true,
+  multiLanguage: false,
+  payments: true,
+} as const;
+
+// Uso
+import { features } from "@/config/features";
+
+if (features.formBuilder) {
+  // Mostrar Form Builder
+}
+```
+
+### Configuración de temas
+
+```typescript
+// src/config/themes.ts
+export const themes = [
+  "light",
+  "dark",
+  "blue",
+  "green",
+  "purple",
+  "red",
+] as const;
+
+export const defaultTheme = "light";
+```
+
+## Base de datos (Futuro)
+
+Para cuando necesites persistencia de datos:
+
+```bash
+# PostgreSQL
+DATABASE_URL=postgresql://user:password@localhost:5432/yuno_demo
+
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/yuno_demo
+
+# Redis (Cache)
+REDIS_URL=redis://localhost:6379
+```
+
+## Despliegue
+
+### Vercel
+
+```json
+{
+  "buildCommand": "cd apps/website && npm run build",
+  "outputDirectory": "apps/website/.next",
+  "devCommand": "cd apps/website && npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs"
+}
+```
+
+### Variables de entorno en producción
+
+```bash
+NEXT_PUBLIC_API_URL=https://api.yuno-demo.com
+NEXT_PUBLIC_ENABLE_ANALYTICS=true
+YUNO_API_KEY=your_production_key
+```
+
+## Siguiente paso
+
+Aprende sobre [Validación](/docs/api/validation) de formularios y datos.

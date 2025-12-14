@@ -1,0 +1,118 @@
+---
+title: Quick Start
+description: Learn to use Yuno Demo in minutes
+---
+
+# Quick Start
+
+Learn to use Yuno Demo in just a few minutes.
+
+## Form Builder
+
+The form builder allows you to create interactive forms visually.
+
+> **Info**: The Form Builder is available at `/playground` in your application.
+
+### Navigate to the playground
+
+1. Navigate to `/playground` in your application
+2. You'll see an interface divided into two panels:
+   - **Left panel**: Visual form builder
+   - **Right panel**: Real-time preview
+
+### Add fields
+
+```tsx
+import { FormBuilder } from "@/components/screens/form-builder";
+
+export default function MyPage() {
+  return <FormBuilder />;
+}
+```
+
+## Using UI Components
+
+All components are available in `@/components/ui`:
+
+### Button Example
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button>Click me</Button>
+<Button variant="destructive">Delete</Button>
+<Button variant="outline">Cancel</Button>
+```
+
+### Input Example
+
+```tsx
+import { Input } from "@/components/ui/input";
+
+<Input placeholder="Enter your email" />
+<Input type="password" placeholder="Password" />
+```
+
+### Card Example
+
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+<Card>
+  <CardHeader>
+    <CardTitle>My Form</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <Input placeholder="Enter your email" />
+    <Button className="mt-4">Submit</Button>
+  </CardContent>
+</Card>
+```
+
+## Themes
+
+Change themes using the theme picker:
+
+```tsx
+import { ThemePicker } from "@/components/theme-picker";
+
+export default function Layout() {
+  return (
+    <div>
+      <ThemePicker />
+      {/* Tu contenido */}
+    </div>
+  );
+}
+```
+
+## Validación de formularios
+
+Utiliza los esquemas de validación incluidos:
+
+```tsx
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const formSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(8, "Mínimo 8 caracteres"),
+});
+
+export default function LoginForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
+  return (
+    <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+      {/* campos del formulario */}
+    </form>
+  );
+}
+```
+
+## Siguiente paso
+
+Explora la [Documentación de Componentes](/docs/components) para ver todos los componentes disponibles.
