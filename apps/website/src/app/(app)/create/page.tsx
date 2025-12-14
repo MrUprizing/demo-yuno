@@ -80,8 +80,8 @@ export default function StartAICheckout() {
               preset="fade-in-blur"
               className="mx-auto mt-8 max-w-2xl text-balance text-lg text-muted-foreground"
             >
-              Generate a fully customizable checkout in seconds.  
-              Let AI handle layout, fields, branding and payment logic.
+              Generate a fully customizable checkout in seconds. Let AI handle
+              layout, fields, branding and payment logic.
             </TextEffect>
 
             <AnimatedGroup
@@ -118,7 +118,7 @@ export default function StartAICheckout() {
                 variant="ghost"
                 className="rounded-xl px-6"
               >
-                <Link href="/docs">
+                <Link href="https://docs.yuno.uprizing.me/docs">
                   Learn how it works
                 </Link>
               </Button>

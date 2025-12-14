@@ -75,11 +75,16 @@ demo-yuno/                     # Main source code of the project
 
 - **Dependency management:** npm and bun were used to ensure security and proper version management.
 
+- **Vercel AI Gateway:** Integration with Vercel's AI Gateway enables intelligent form generation and optimization, providing seamless access to AI models while maintaining performance and reliability through Vercel's infrastructure.
+
+- **Virtual Machines for secure form development:** Forms are developed and executed within isolated virtual machines, ensuring that both AI-generated and human-developed forms operate in a controlled, secure, and sandboxed environment. This approach prevents unauthorized access to sensitive data and provides an additional layer of security during the form creation and deployment process.
+
 - **Other relevant decisions:**
   
   - **Bucket selection for JSON config storage:** This allows greater flexibility within the project and provides faster, direct access to the resource for loading the JSON configuration.
   
-  - **Use of an iFrame (not implemented but considered) in the form:** For security reasons, no Merchant should have direct access to the generated components. Instead, access would be provided through an iFrame, preventing exposure to sensitive fields such as card numbers.
+  - **Use of an iFrame in the form:** For security reasons, no Merchant should have direct access to the generated components. Instead, access would be provided through an iFrame, preventing exposure to sensitive fields such as card numbers.
+
 
 ----------
 
@@ -92,4 +97,4 @@ demo-yuno/                     # Main source code of the project
 ## URL's
 - Website (landing page, Checkout Builder, AI Builder, Web Scrapper) : https://yuno.uprizing.me/
 - Website Docs : https://docs.yuno.uprizing.me/docs
-- Demo Project : https://prototypeyuno.netlify.app/ 
+- Demo Project : https://prototypeyuno.netlify.app/
