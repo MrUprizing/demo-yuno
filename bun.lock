@@ -131,18 +131,6 @@
         "typescript": "^5.9.3",
       },
     },
-    "packages/yuno-demo-sdk": {
-      "name": "yuno-demo-sdk-core",
-      "version": "0.4.0",
-    },
-    "packages/yuno-demo-sdk-ui": {
-      "name": "yuno-demo-sdk-ui",
-      "version": "0.6.0",
-      "dependencies": {
-        "react": "^19.2.3",
-        "react-dom": "^19.2.3",
-      },
-    },
   },
   "packages": {
     "@0no-co/graphql.web": ["@0no-co/graphql.web@1.2.0", "", { "peerDependencies": { "graphql": "^14.0.0 || ^15.0.0 || ^16.0.0" }, "optionalPeers": ["graphql"] }, "sha512-/1iHy9TTr63gE1YcR5idjx8UREz1s0kFhydf3bBLCXyqjhkIc6igAzTOx3zPifCwFR87tsh/4Pa9cNts6d2otw=="],
@@ -2815,9 +2803,7 @@
 
     "yocto-queue": ["yocto-queue@0.1.0", "", {}, "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q=="],
 
-    "yuno-demo-sdk-core": ["yuno-demo-sdk-core@workspace:packages/yuno-demo-sdk"],
-
-    "yuno-demo-sdk-ui": ["yuno-demo-sdk-ui@workspace:packages/yuno-demo-sdk-ui"],
+    "yuno-demo-sdk-ui": ["yuno-demo-sdk-ui@0.6.0", "", { "dependencies": { "react": "^19.2.3", "react-dom": "^19.2.3" } }, "sha512-wmCzJOaGnQGH+tWgfyJM4F9Dn6bTe+UEvVLmHjf/Df9Wtr95U/dL5eAL64OwDE6gYT+iV1AAHHxSaRdfRTBsyQ=="],
 
     "zod": ["zod@4.1.13", "", {}, "sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig=="],
 

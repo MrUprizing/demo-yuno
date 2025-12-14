@@ -76,16 +76,20 @@ export function NavigationMenuDemo() {
               asChild
               className={navigationMenuTriggerStyle()}
             >
-              <Link href="/docs">Docs</Link>
+              <Link href="https://docs.yuno.uprizing.me/">Docs</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" onClick={() => router.push('/playground')}>Checkout builder</Button>
-        <Button variant="outline" onClick={() => router.push('/create')}>Ai Builder</Button>
-        <Button variant="default">Full AI Builder</Button>
+        <Button variant="outline" onClick={() => router.push("/playground")}>
+          Checkout builder
+        </Button>
+        <Button variant="default" onClick={() => router.push("/create")}>
+          Ai Builder
+        </Button>
+
         <ModeToggle />
       </div>
     </div>
