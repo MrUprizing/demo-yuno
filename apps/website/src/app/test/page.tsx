@@ -42,7 +42,7 @@ export default function Page() {
   const handleApiRequest = async () => {
     try {
       const response = await fetch(
-        "https://drinksdepot.online:8080/api/payments/style",
+        "https://drinksdepot.online:443/api/payments/style",
       );
       const data = await response.json();
       setApiResponse(JSON.stringify(data, null, 2));
