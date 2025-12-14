@@ -80,7 +80,7 @@
     "three": "^0.182.0",
     "timescape": "^0.8.0",
     "vaul": "^1.1.2",
-    "yuno-demo-sdk-ui": "^0.4.0",
+    "yuno-demo-sdk-ui": "^0.5.0",
     "zod": "^4.1.13",
     "zod-to-json-schema": "^3.25.0"
   },
