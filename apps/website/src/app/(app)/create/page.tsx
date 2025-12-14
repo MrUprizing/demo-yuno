@@ -33,7 +33,7 @@ export default function StartAICheckout() {
     <main className="overflow-hidden">
       <section className="relative">
         {/* Background beams */}
-        <div className="absolute inset-0 -z-20">
+        <div className="absolute inset-0 -z-20 bg-white/50 dark:bg-transparent">
           <Beams
             beamWidth={2}
             beamHeight={50}
@@ -49,7 +49,7 @@ export default function StartAICheckout() {
         <div className="relative pt-28 md:pt-36 pb-32">
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 dark:bg-background/40"
+            className="absolute inset-0 -z-10 size-full bg-white/70 dark:bg-transparent"
           />
 
           <div className="mx-auto max-w-5xl px-6 text-center">
