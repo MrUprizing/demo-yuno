@@ -1,4 +1,3 @@
-import { anthropic } from "@ai-sdk/anthropic";
 import Firecrawl from "@mendable/firecrawl-js";
 import {
   convertToModelMessages,
@@ -130,7 +129,7 @@ export async function POST(req: Request) {
   };
 
   const result = streamText({
-    model: anthropic("claude-haiku-4-5"),
+    model: "anthropic/claude-haiku-4.5",
     maxRetries: 2,
     system:
       "You are an AI App CheckOuts Builder. Generate CheckOuts ui. The existing app is in the /template directory. Please edit the app how the user wants and commit the changes incrementally." +
