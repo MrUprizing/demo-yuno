@@ -10,7 +10,7 @@ export async function createChat(name: string) {
       name: name,
       public: true,
       source: {
-        url: "https://github.com/freestyle-sh/freestyle-next",
+        url: "https://github.com/MrUprizing/yuno-template",
       },
       devServers: {
         preset: "nextJs",
