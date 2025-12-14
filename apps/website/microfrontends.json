@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "demo-yuno-website": {
+      "development": {
+        "fallback": "yuno.uprizing.me"
+      }
+    },
+    "demo-yuno-website-docs": {
+      "routing": [
+        {
+          "paths": ["/docs"]
+        }
+      ]
+    }
+  }
+}
