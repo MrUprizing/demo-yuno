@@ -30,7 +30,7 @@ export default function Page() {
   // Apply theme variables to the card container
   useEffect(() => {
     if (Object.keys(themeVars).length > 0) {
-      const container = document.getElementById('themed-card-container');
+      const container = document.getElementById("themed-card-container");
       if (container) {
         Object.entries(themeVars).forEach(([key, value]) => {
           container.style.setProperty(key, value);
@@ -42,11 +42,11 @@ export default function Page() {
   const handleApiRequest = async () => {
     try {
       const response = await fetch(
-        "http://52.15.192.69:8080/api/payments/style",
+        "https://drinksdepot.online:8080/api/payments/style",
       );
       const data = await response.json();
       setApiResponse(JSON.stringify(data, null, 2));
-      
+
       // Handle new structure with formFields and themeVars
       if (data.formFields && data.themeVars) {
         setFormFields(data.formFields);
